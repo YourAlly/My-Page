@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from MyPage.forms import RegistrationForm
 from django.contrib import messages
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Post, Comment, Message
 
@@ -33,7 +34,7 @@ def register(request):
     }
     return render(request, 'MyPage/register.html', context)
 
-
+@login_required
 def profile(request):
 
     context = {

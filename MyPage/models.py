@@ -39,3 +39,16 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{self.time_sent}: From {self.sent_by} to {self.sent_to}"
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='profile')
+    profile_picture = models.ImageField(
+        default='image.jpg', upload_to='images')
+    friends = models.ManyToManyField(User, blank=True, related_name='friends')
+    hidden_posts = models.ManyToManyField(
+        Post, blank=True, related_name='hidden_by')
+
+    def __str__(self):
+        return f'Username: {self.user.username}'
