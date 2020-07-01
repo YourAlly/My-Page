@@ -1,4 +1,22 @@
 {% extends "MyPage/base.html" %} 
 {% block content %}
-Index
+
+    <div class="container">
+
+        {% for post in posts %}
+
+            <h1 title="{{ post.time_posted }}">{{ post.author }}</h1>
+            <p>{{ post.content }}</p>
+            
+                <div class="container" style="width: 40%; margin-right: 60%">
+                    <h3 class='border-bottom'>Comments</h3>
+                    {% for comment in post.post_comments.all %}
+                        <h4>{{ comment.commenter }}</h4>
+                        <p>{{ comment.content }}</p>
+                    {% endfor %}
+                </div>
+
+        {% endfor %}
+    </div>
+        
 {% endblock %}

@@ -14,7 +14,7 @@
         
 		<title>{% if page_title %} My Page - {{ page_title }} {% else %} My Page {% endif %}</title>
 	</head>
-	<body>
+	<body class="text-light bg-dark">
         <!-- Bootstrap lol -->
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" style="color: antiquewhite;">My Page</a>
@@ -24,11 +24,13 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'my-profile' %}">Profile</a>
+            </li>
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'my-index' %}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Profile</a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -43,15 +45,32 @@
             </li>
             </ul>
             <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Log in</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Register</a>
-            </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'my-logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'my-login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'my-register' %}">Register</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
         </nav>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
 		<script
 			src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 			integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
