@@ -12,8 +12,8 @@ urlpatterns = [
     path('user/<int:user_id>/add', my_views.add, name='my-add'),
     path('user/<int:user_id>/remove', my_views.remove, name='my-remove'),
     path('messenger/', my_views.messenger, name='my-messenger'),
-    path('profile/changeimage/', my_views.update_image, name='my-update-image'),
-    path('profile/changeemail/', my_views.update_email, name='my-update-email'),
+    path('user/changeimage/', my_views.update_image, name='my-update-image'),
+    path('user/changeemail/', my_views.update_email, name='my-update-email'),
     path('login/', auth_views.LoginView.as_view(template_name="MyPage/login.html"), name='my-login'),
     path('logout/', auth_views.LogoutView.as_view(template_name="MyPage/logout.html"), name='my-logout')
 ] 

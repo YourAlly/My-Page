@@ -11,7 +11,7 @@ from .models import Post, Comment, Message
 def index(request):
     context = {
         'page_title': "Home",
-        'posts': Post.objects.all()
+        'posts': Post.objects.all().order_by('-time_posted')[:10]
     }
     return render(request, 'MyPage/index.html', context)
 
@@ -57,7 +57,7 @@ def update_image(request):
         form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
-            return redirect('my-profile')
+            return redirect('my-user', request.user.id)
     else:
         form = ProfileUpdateForm()
 
@@ -75,7 +75,7 @@ def update_email(request):
         form = UserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('my-profile')
+            return redirect('my-user', request.user.id)
     else:
         form = UserUpdateForm()
 

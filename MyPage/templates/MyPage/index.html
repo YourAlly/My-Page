@@ -1,12 +1,12 @@
 {% extends "MyPage/base.html" %} 
 {% block content %}
-    
+    <h2 class="border-bottom" style="margin-bottom: 2%;">Latest Posts</h2>
         {% for post in posts %}
             {% if not post in user.profile.hidden_posts.all %}
                 <div class="container" style="margin-bottom: 5%;">
                     
                     <h1 title="{{ post.time_posted }}">
-                        <img src="{{ post.author.profile.image.url }}" style="width:5%;">
+                        <img src="{{ post.author.profile.image.url }}" style="width:5%;" class="rounded-circle">
                         
                         <a href="{% url 'my-user' post.author.id %}">
                             {{ post.author }}
@@ -19,7 +19,7 @@
                             <h3 class='border-bottom'>Comments</h3>
                             {% for comment in post.post_comments.all %}
                                 <h4>
-                                    <img src="{{ comment.commenter.profile.image.url }}" style="width:5%;">
+                                    <img src="{{ comment.commenter.profile.image.url }}" style="width:5%;" class="rounded-circle">
                                     <a href="{% url 'my-user' comment.commenter.id %}">
                                         {{ comment.commenter }}
                                     </a>
