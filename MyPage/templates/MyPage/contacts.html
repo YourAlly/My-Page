@@ -1,9 +1,9 @@
 {% extends 'MyPage/base.html' %}
 {% block content %}
-    <h2 class="border-bottom">Contacts</h2>
+    <h2 class="border-bottom" style="width: 40%; margin-right: 60%">Contacts</h2>
         <ul>
             {% for friend in user.profile.friends.all %}
-                <li><a href="#">{{ friend.username }}</a></li>
+                <li><a href="#" class="text-light">{{ friend.username }}</a></li>
             {% endfor %}
         </ul>
 {% endblock %}

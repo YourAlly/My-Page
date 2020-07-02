@@ -11,14 +11,14 @@
     </br>
     {% if target == user %}
         
-        <a href="{% url 'my-update-image' %}">Update Profile Picture</a></br>
-        <a href="{% url 'my-update-email' %}">Update Email</a>
+        <a href="{% url 'my-update-image' %}" class="text-secondary">Update Profile Picture</a></br>
+        <a href="{% url 'my-update-email' %}" class="text-secondary">Update Email</a>
 
     {% elif target in user.profile.friends.all %}
-        <a href="{% url 'my-remove' target.id %}">Remove from contacts</a>
+        <a href="{% url 'my-remove' target.id %}" class="text-secondary">Remove from contacts</a>
 
     {% else %}
-        <a href="{% url 'my-add' target.id %}">Add to contacts</a>
+        <a href="{% url 'my-add' target.id %}" class="text-secondary">Add to contacts</a>
         
     {% endif %}
 {% endblock %}

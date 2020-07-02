@@ -6,8 +6,24 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Post, Comment, Message
 
+from django.views.generic import ListView, DetailView, CreateView
+
 # Create your views here.
 
+# Views all posts
+class PostsView(ListView):
+    model = Post
+    template_name = 'MyPage/index.html'
+    context_object_name = 'posts'
+    ordering = ['-time_posted']
+
+# Views a certain post with comments
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'MyPage/post.html'
+    context_object_name = 'post'
+
+# Views a certain amount of posts
 def index(request):
     context = {
         'page_title': "Home",
@@ -15,7 +31,7 @@ def index(request):
     }
     return render(request, 'MyPage/index.html', context)
 
-
+# Registers a user
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
@@ -34,6 +50,8 @@ def register(request):
     }
     return render(request, 'MyPage/form.html', context)
 
+
+# User profile page
 @login_required
 def user(request, user_id):
 
@@ -43,13 +61,15 @@ def user(request, user_id):
     }
     return render(request, 'MyPage/profile.html', context)
 
+
 @login_required
-def messenger(request):
+def contacts(request):
 
     context = {
         'page_title': "Contacts"
     }
     return render(request, 'MyPage/contacts.html', context)
+
 
 @login_required
 def update_image(request):
@@ -84,6 +104,7 @@ def update_email(request):
         'form': form
     }
     return render(request, 'MyPage/form.html', context)
+
 
 @login_required
 def add(request, user_id):

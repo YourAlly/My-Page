@@ -1,0 +1,26 @@
+{% extends 'MyPage/base.html' %}
+{% block content %}
+<div class="container" style="margin-bottom: 2%;">
+    <h2 title="{{ post.time_posted }}">
+        <img src="{{ post.author.profile.image.url }}" style="width:5%;" class="rounded-circle" title="{{ post.author }}">
+        {{ post.title }}
+    </h2>
+    <div class="container">
+        <p>{{ post.content }}</p>
+    </div>
+</div>
+<div class="container" style="width: 40%; margin-right: 60%">
+    <h3 class='border-bottom'>Comments</h3>
+        {% for comment in post.post_comments.all %}
+            <h4>
+            <img src="{{ comment.commenter.profile.image.url }}" style="width:5%;" class="rounded-circle">
+            <a href="{% url 'my-user' comment.commenter.id %}">
+                {{ comment.commenter }}
+            </a>
+            </h4>
+            <div class="container">
+                <p>{{ comment.content }}</p>
+            </div>
+        {% endfor %}
+</div>
+{% endblock %}

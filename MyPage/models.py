@@ -10,6 +10,7 @@ class Post(models.Model):
         User, on_delete=models.CASCADE, related_name="written_posts")
     time_posted = models.DateTimeField(default=timezone.now)
     
+    title = models.CharField(max_length=64, default='No Title')
     content = models.TextField()
 
     def __str__(self):
