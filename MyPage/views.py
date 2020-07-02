@@ -38,6 +38,14 @@ def register(request):
 def profile(request):
 
     context = {
-        'page_title': "My Profile",
+        'page_title': "My Profile"
     }
     return render(request, 'MyPage/profile.html', context)
+
+@login_required
+def messenger(request):
+
+    context = {
+        'page_title': "Messenger"
+    }
+    return render(request, 'MyPage/messenger.html', context)

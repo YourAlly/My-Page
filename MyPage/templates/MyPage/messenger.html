@@ -1,0 +1,8 @@
+{% extends 'MyPage/base.html' %}
+{% block content %}
+    <select name="Placeholder">
+        {% for friend in user.profile.friends.all %}
+            <option value='{{ friend.id }}'>{{ friend.username }}</option>
+        {% endfor %}
+    </select>
+{% endblock %}
