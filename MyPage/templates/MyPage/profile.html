@@ -1,11 +1,24 @@
 {% extends 'MyPage/base.html' %}
 
 {% block content %}
-<img src='{{ user.profile.image.url }}' style='width:10%;' alt="No Profile Picture Set">
-<h1>
-{{ user.username }}
-</h1>
+    <img src='{{ target.profile.image.url }}' style='width:10%;' alt="No Profile Picture Set">
+    <h1>
+    {{ target.username }}
+    </h1>
 
-{{ user.email }}
+    {{ target.email }}
 
+    </br>
+    {% if target == user %}
+        
+        <a href="{% url 'my-update-image' %}">Update Profile Picture</a></br>
+        <a href="{% url 'my-update-email' %}">Update Email</a>
+
+    {% elif target in user.profile.friends.all %}
+        <a href="{% url 'my-remove' target.id %}">Remove from contacts</a>
+
+    {% else %}
+        <a href="{% url 'my-add' target.id %}">Add to contacts</a>
+        
+    {% endif %}
 {% endblock %}

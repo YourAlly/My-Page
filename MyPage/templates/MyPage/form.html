@@ -3,7 +3,15 @@
 {% block content %}
     </br>
     <div class="col-sm-12">
-        <form method="POST" class="form-signin col-6 border border-secondary" style="padding: 20px;">
+        <form method="POST" 
+            class="form-signin col-6 border border-secondary" 
+            style="padding: 20px;"
+            
+            {% comment %} A lazy implementation, I know {% endcomment %}
+            {% if multipart %}
+                enctype="multipart/form-data"
+            {% endif %}
+        >
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom" style="margin-bottom: 30px;">{{ page_title }}</legend>

@@ -3,18 +3,27 @@
     
         {% for post in posts %}
             {% if not post in user.profile.hidden_posts.all %}
-                <div class="container">
+                <div class="container" style="margin-bottom: 5%;">
                     
                     <h1 title="{{ post.time_posted }}">
-                    <img src="{{ post.author.profile.image.url }}" style="width:5%;">
-                    {{ post.author }}
+                        <img src="{{ post.author.profile.image.url }}" style="width:5%;">
+                        
+                        <a href="{% url 'my-user' post.author.id %}">
+                            {{ post.author }}
+                        </a>
                     </h1>
+                    
                     <p>{{ post.content }}</p>
                     
                         <div class="container" style="width: 40%; margin-right: 60%">
                             <h3 class='border-bottom'>Comments</h3>
                             {% for comment in post.post_comments.all %}
-                                <h4><img src="{{ comment.commenter.profile.image.url }}" style="width:5%;">{{ comment.commenter }}</h4>
+                                <h4>
+                                    <img src="{{ comment.commenter.profile.image.url }}" style="width:5%;">
+                                    <a href="{% url 'my-user' comment.commenter.id %}">
+                                        {{ comment.commenter }}
+                                    </a>
+                                </h4>
                                 <p>{{ comment.content }}</p>
                             {% endfor %}
                         </div>
