@@ -25,7 +25,7 @@ class Comment(models.Model):
     content = models.TextField()
 
     def __str__(self):
-        return f"{self.commenter}: {self.time_commented}"
+        return f"{self.commenter}: {self.time_commented} - {self.on_post} "
 
 
 class Message(models.Model):
@@ -43,7 +43,7 @@ class Message(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_pic = models.ImageField(default='image.jpg', upload_to='images')
+    image = models.ImageField(default='default.png', upload_to='images')
     friends = models.ManyToManyField(User, blank=True, related_name='friends')
     hidden_posts = models.ManyToManyField(Post, blank=True)
 

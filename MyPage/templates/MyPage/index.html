@@ -1,22 +1,25 @@
 {% extends "MyPage/base.html" %} 
 {% block content %}
-
-    <div class="container">
-
+    
         {% for post in posts %}
-
-            <h1 title="{{ post.time_posted }}">{{ post.author }}</h1>
-            <p>{{ post.content }}</p>
-            
-                <div class="container" style="width: 40%; margin-right: 60%">
-                    <h3 class='border-bottom'>Comments</h3>
-                    {% for comment in post.post_comments.all %}
-                        <h4>{{ comment.commenter }}</h4>
-                        <p>{{ comment.content }}</p>
-                    {% endfor %}
+            {% if not post in user.profile.hidden_posts.all %}
+                <div class="container">
+                    
+                    <h1 title="{{ post.time_posted }}">
+                    <img src="{{ post.author.profile.image.url }}" style="width:5%;">
+                    {{ post.author }}
+                    </h1>
+                    <p>{{ post.content }}</p>
+                    
+                        <div class="container" style="width: 40%; margin-right: 60%">
+                            <h3 class='border-bottom'>Comments</h3>
+                            {% for comment in post.post_comments.all %}
+                                <h4><img src="{{ comment.commenter.profile.image.url }}" style="width:5%;">{{ comment.commenter }}</h4>
+                                <p>{{ comment.content }}</p>
+                            {% endfor %}
+                        </div>
                 </div>
-
+            {% endif %}
         {% endfor %}
-    </div>
         
 {% endblock %}
