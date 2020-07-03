@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views as my_views
-from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LogoutView
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -8,10 +8,17 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', my_views.index, name='my-index'),
     path('register/', my_views.register, name='my-register'),
+    path('login/', my_views.LoginView.as_view(), name='my-login'),
+    path('logout/', LogoutView.as_view(template_name="MyPage/logout.html"), name='my-logout'),
     path('contacts/', my_views.contacts, name='my-contacts'),
-    path('post=<int:pk>/', my_views.PostDetailView.as_view(), name='my-post'),
+    path('contacts/message_user_id=<int:target_id>', my_views.send_message, name='my-messenger'),
+    path('inbox/', my_views.inbox, name='my-inbox'),
+    path('sent/', my_views.sent_messages, name='my-sent-messages'),
+
+    path('post/all/', my_views.PostsView.as_view(), name='my-posts-all'),
+    path('post/<int:pk>/', my_views.PostDetailView.as_view(), name='my-post'),
     path('post/new/', my_views.post_form, name='my-new-post'),
-    path('post=<int:post_id>/comment', my_views.process_comment, name='my-comment'),
+    path('post/<int:post_id>/comment', my_views.process_comment, name='my-comment'),
 
     path('user/<int:user_id>/', my_views.user, name='my-user'),
     path('user/<int:user_id>/add/', my_views.add, name='my-add'),
@@ -19,10 +26,7 @@ urlpatterns = [
     
 
     path('user/changeimage/', my_views.update_image, name='my-update-image'),
-    path('user/changeemail/', my_views.update_email, name='my-update-email'),
-
-    path('login/', auth_views.LoginView.as_view(template_name="MyPage/login.html"), name='my-login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name="MyPage/logout.html"), name='my-logout')
+    path('user/changeemail/', my_views.update_email, name='my-update-email')
 ] 
 
 if settings.DEBUG:

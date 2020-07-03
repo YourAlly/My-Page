@@ -1,0 +1,16 @@
+{% extends 'MyPage/base.html' %}
+{% block content %}
+    <h3 class='border-bottom' style="width: 50%;">Inbox</h3>
+    {% if not user.received_messages.all %}
+        <h3> No messsages recieved </h3>
+    {% endif %}
+    {% for message in user.received_messages.all %}
+    <div class="container">
+        <h4 title="by {{ message.sent_by }}">{{ message.title }}</h4>
+        <div class="container">
+            <p>{{ message.message }}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+{% endblock %}

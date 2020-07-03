@@ -2,8 +2,8 @@
 {% block content %}
     <h2 class="border-bottom" style="width: 40%; margin-right: 60%">Contacts</h2>
         <ul>
-            {% for friend in user.profile.friends.all %}
-                <li><a href="#" class="text-light">{{ friend.username }}</a></li>
+            {% for contact in user.profile.contacts.all %}
+                <li><a href="{% url 'my-user' contact.id %}" class="text-light">{{ contact.username }}</a></li>
             {% endfor %}
         </ul>
 {% endblock %}

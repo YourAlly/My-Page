@@ -31,10 +31,11 @@ class Comment(models.Model):
 
 
 class Message(models.Model):
+    title = models.CharField(max_length=32, default='No Title')
     sent_by = models.ForeignKey(User, on_delete=models.CASCADE,
                            related_name='sent_messages')
     sent_to = models.ForeignKey(User, on_delete=models.CASCADE,
-                           related_name='recieved_messages')
+                           related_name='received_messages')
     time_sent = models.DateTimeField(default=timezone.now)
 
     message = models.TextField()
@@ -46,7 +47,7 @@ class Message(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.png', upload_to='images')
-    friends = models.ManyToManyField(User, blank=True, related_name='friends')
+    contacts = models.ManyToManyField(User, blank=True, related_name='contacts')
     hidden_posts = models.ManyToManyField(Post, blank=True)
 
     def __str__(self):

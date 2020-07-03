@@ -10,29 +10,29 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
+
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField()
 
     class Meta:
         model = User
         fields = ['email']
-    
+
+
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image']
 
 
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ['comment']
-        widgets = {
-            'comment': forms.Textarea(attrs={'rows': 3}),
-        }
+class CommentForm(forms.Form):
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 3}), max_length=256)
 
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = ['title', 'content']
 
+class PostForm(forms.Form):
+    title = forms.CharField(max_length=32, label="Title")
+    content = forms.CharField(widget=forms.Textarea, max_length=512)
+
+class MessageForm(forms.Form):
+    title = forms.CharField(max_length=32, label="Title")
+    content = forms.CharField(widget=forms.Textarea, max_length=512)

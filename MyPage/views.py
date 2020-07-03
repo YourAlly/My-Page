@@ -1,16 +1,26 @@
 from django.shortcuts import render, redirect
-from MyPage.forms import RegistrationForm, UserUpdateForm, ProfileUpdateForm, CommentForm, PostForm
+
+from MyPage import forms
+from .models import Post, Comment, Message
 from django.contrib import messages
 
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Post, Comment, Message
 
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView
 
 # Create your views here.
 
 # Views all posts
+class LoginView(auth_views.LoginView):
+    template_name = "MyPage/form.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Login'
+        return context
+
 class PostsView(ListView):
     model = Post
     template_name = 'MyPage/index.html'
@@ -26,7 +36,7 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['form'] = CommentForm
+        context['form'] = forms.CommentForm
         return context
 
 
@@ -38,10 +48,11 @@ def index(request):
     }
     return render(request, 'MyPage/index.html', context)
 
+
 # Registers a user
 def register(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        form = forms.RegistrationForm(request.POST)
 
         if form.is_valid():
             form.save()
@@ -49,7 +60,7 @@ def register(request):
             return redirect('my-login')
 
     else:
-        form = RegistrationForm()
+        form = forms.RegistrationForm()
 
     context = {
         'page_title': "Register",
@@ -57,12 +68,12 @@ def register(request):
     }
     return render(request, 'MyPage/form.html', context)
 
+
 @login_required
 def post_form(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = forms.PostForm(request.POST)
         if form.is_valid():
-
             new_post = Post(author=request.user,
             title=form.cleaned_data['title'],
             content=form.cleaned_data['content'] if not form.cleaned_data['content'] == '' else None)
@@ -70,9 +81,29 @@ def post_form(request):
             messages.success(request, "Post Created")
             return redirect('my-index')
     else:
-        form = PostForm()
+        form = forms.PostForm(initial={'title': ''})
     context = {
         'page_title': "Post",
+        'form': form
+    }
+    return render(request, 'MyPage/form.html', context)
+
+@login_required
+def send_message(request, target_id):
+    if request.method == 'POST':
+        form = forms.MessageForm(request.POST)
+        if form.is_valid():
+            new_message = Message(sent_by=request.user,
+                            sent_to=User.objects.get(pk=target_id),
+                            title=form.cleaned_data['title'],
+                            message=form.cleaned_data['content'] if not form.cleaned_data['content'] == '' else None)
+            new_message.save()
+            messages.success(request, "Message Sent")
+            return redirect('my-index')
+    else:
+        form = forms.MessageForm(initial={'title': ''})
+    context = {
+        'page_title': "Send Message",
         'form': form
     }
     return render(request, 'MyPage/form.html', context)
@@ -81,11 +112,11 @@ def post_form(request):
 @login_required
 def process_comment(request, post_id):
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        form = forms.CommentForm(request.POST)
         if form.is_valid():
             new_comment = Comment(commenter=request.user,
                                   on_post=Post.objects.get(pk=post_id),
-                                  content=form.cleaned_data['comment'])
+                                  comment=form.cleaned_data['comment'])
             new_comment.save()
             messages.success(request, "Comment Posted!")
     else:
@@ -94,7 +125,6 @@ def process_comment(request, post_id):
     return redirect('my-post', post_id)
 
 # User profile page
-@login_required
 def user(request, user_id):
 
     context = {
@@ -102,6 +132,7 @@ def user(request, user_id):
         'target': User.objects.get(pk=user_id)
     }
     return render(request, 'MyPage/profile.html', context)
+
 
 
 @login_required
@@ -114,14 +145,32 @@ def contacts(request):
 
 
 @login_required
+def inbox(request):
+    context = {
+        'page_title': "My Inbox"
+    }
+    return render(request, 'MyPage/inbox.html', context)
+
+
+@login_required
+def sent_messages(request):
+    context = {
+        'page_title': "My sent_messages"
+    }
+    return render(request, 'MyPage/sent_messages.html', context)
+
+
+
+@login_required
 def update_image(request):
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        form = forms.ProfileUpdateForm(
+            request.POST, request.FILES, instance=request.user.profile)
         if form.is_valid():
             form.save()
             return redirect('my-user', request.user.id)
     else:
-        form = ProfileUpdateForm()
+        form = forms.ProfileUpdateForm()
 
     context = {
         'page_title': "Change Profile Picture",
@@ -134,12 +183,12 @@ def update_image(request):
 @login_required
 def update_email(request):
     if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=request.user)
+        form = forms.UserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('my-user', request.user.id)
     else:
-        form = UserUpdateForm()
+        form = forms.UserUpdateForm()
 
     context = {
         'page_title': "Update Email",
@@ -151,7 +200,7 @@ def update_email(request):
 @login_required
 def add(request, user_id):
     user1 = User.objects.get(pk=user_id)
-    request.user.profile.friends.add(user1)
+    request.user.profile.contacts.add(user1)
     messages.success(request, f"{user1.username} added to contacts")
     return redirect("my-user", user_id=user_id)
 
@@ -159,6 +208,6 @@ def add(request, user_id):
 @login_required
 def remove(request, user_id):
     user1 = User.objects.get(pk=user_id)
-    request.user.profile.friends.remove(user1)
+    request.user.profile.contacts.remove(user1)
     messages.success(request, f"{user1.username} removed from contacts")
     return redirect("my-user", user_id=user_id)
