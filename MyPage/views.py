@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from MyPage.forms import RegistrationForm, UserUpdateForm, ProfileUpdateForm
+from MyPage.forms import RegistrationForm, UserUpdateForm, ProfileUpdateForm, CommentForm, PostForm
 from django.contrib import messages
 
 from django.contrib.auth.decorators import login_required
@@ -17,11 +17,18 @@ class PostsView(ListView):
     context_object_name = 'posts'
     ordering = ['-time_posted']
 
+
 # Views a certain post with comments
 class PostDetailView(DetailView):
     model = Post
     template_name = 'MyPage/post.html'
     context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = CommentForm
+        return context
+
 
 # Views a certain amount of posts
 def index(request):
@@ -50,6 +57,41 @@ def register(request):
     }
     return render(request, 'MyPage/form.html', context)
 
+@login_required
+def post_form(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+
+            new_post = Post(author=request.user,
+            title=form.cleaned_data['title'],
+            content=form.cleaned_data['content'] if not form.cleaned_data['content'] == '' else None)
+            new_post.save()
+            messages.success(request, "Post Created")
+            return redirect('my-index')
+    else:
+        form = PostForm()
+    context = {
+        'page_title': "Post",
+        'form': form
+    }
+    return render(request, 'MyPage/form.html', context)
+
+
+@login_required
+def process_comment(request, post_id):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            new_comment = Comment(commenter=request.user,
+                                  on_post=Post.objects.get(pk=post_id),
+                                  content=form.cleaned_data['comment'])
+            new_comment.save()
+            messages.success(request, "Comment Posted!")
+    else:
+        messages.error(request, "Something went wrong")
+
+    return redirect('my-post', post_id)
 
 # User profile page
 @login_required

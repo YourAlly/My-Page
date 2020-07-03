@@ -10,6 +10,8 @@ urlpatterns = [
     path('register/', my_views.register, name='my-register'),
     path('contacts/', my_views.contacts, name='my-contacts'),
     path('post=<int:pk>/', my_views.PostDetailView.as_view(), name='my-post'),
+    path('post/new/', my_views.post_form, name='my-new-post'),
+    path('post=<int:post_id>/comment', my_views.process_comment, name='my-comment'),
 
     path('user/<int:user_id>/', my_views.user, name='my-user'),
     path('user/<int:user_id>/add/', my_views.add, name='my-add'),

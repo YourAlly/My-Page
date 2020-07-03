@@ -24,7 +24,7 @@ class Comment(models.Model):
         Post, on_delete=models.CASCADE, related_name="post_comments")
     time_commented = models.DateTimeField(default=timezone.now)
     
-    content = models.TextField()
+    comment = models.TextField()
 
     def __str__(self):
         return f"{self.commenter}: {self.time_commented} - {self.on_post} "
@@ -37,7 +37,7 @@ class Message(models.Model):
                            related_name='recieved_messages')
     time_sent = models.DateTimeField(default=timezone.now)
 
-    content = models.TextField()
+    message = models.TextField()
 
     def __str__(self):
         return f"{self.time_sent}: From {self.sent_by} to {self.sent_to}"

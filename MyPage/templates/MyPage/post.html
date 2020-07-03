@@ -1,4 +1,5 @@
 {% extends 'MyPage/base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
 <div class="container" style="margin-bottom: 2%;">
     <h2 title="{{ post.time_posted }}">
@@ -9,6 +10,15 @@
         <p>{{ post.content }}</p>
     </div>
 </div>
+<div class="container">
+    <h5>Post Comment</h5>
+    <form method="POST" action="{% url 'my-comment' post.id %}" style="width: 50%;">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-secondary">Submit</button>
+    </form>
+</div>
+</br>
 <div class="container" style="width: 40%; margin-right: 60%">
     <h3 class='border-bottom'>Comments</h3>
         {% for comment in post.post_comments.all %}

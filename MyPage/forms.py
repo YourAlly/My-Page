@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Comment, Post
 from django import forms
 
 class RegistrationForm(UserCreationForm):
@@ -23,11 +23,16 @@ class ProfileUpdateForm(forms.ModelForm):
         fields = ['image']
 
 
-# TODO
 class CommentForm(forms.ModelForm):
-    pass
+    class Meta:
+        model = Comment
+        fields = ['comment']
+        widgets = {
+            'comment': forms.Textarea(attrs={'rows': 3}),
+        }
 
-# TODO
 class PostForm(forms.ModelForm):
-    pass
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
 
