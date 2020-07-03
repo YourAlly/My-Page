@@ -1,0 +1,53 @@
+{% extends 'MyPage/base.html' %}
+{% block content %}
+
+<h1>{{target.username}}</h1>
+<div class="container" id="chat-box">
+    
+    <form id="chat_message">
+        Message:
+        <input type="text" name="message">
+    </form>
+    <button id="send_button">Send</button>
+<div class="container" id="chat-box">
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', ()=>{
+        document.querySelector('#send_button').onclick = ()=>{
+            send_message();
+        }
+        load_messages();
+    })
+    function load_messages(){
+        request = new XMLHttpRequest()
+        request.open("GET", "{% url 'my-chat-get' target.id %}" )
+        request.responseType = 'json';
+        request.onload = ()=>{
+            print_messages(request.response);
+        }
+        request.send();
+    }
+    function send_message(){
+        form = new FormData(document.querySelector('#chat_message'));
+        request = new XMLHttpRequest()
+        request.open("POST", "{% url 'my-chat-send' target.id %}")
+        request.onload = ()=>{
+            const response = request.response;
+            if(!response['error']){
+                load_messages()
+            }
+            else{
+                alert("Something went wrong")
+            }
+        }
+        request.send(form)
+    }
+    function print_messages(data){
+        for(message of data['sent_messages']){
+            document.querySelector('#chat-box').innerHTML += message['message'] +"</br>";
+        }
+    }
+</script>
+
+{%endblock content %}

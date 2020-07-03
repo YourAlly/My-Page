@@ -24,7 +24,13 @@ urlpatterns = [
     
 
     path('user/changeimage/', my_views.update_image, name='my-update-image'),
-    path('user/changeemail/', my_views.update_email, name='my-update-email')
+    path('user/changeemail/', my_views.update_email, name='my-update-email'),
+
+
+    # Experimental
+    path('chat/<int:target_id>', my_views.chat, name='my-chat'),
+    path('chat/<int:target_id>/send', my_views.chat_send, name='my-chat-send'),
+    path('chat/<int:target_id>/get', my_views.chat_get, name='my-chat-get')
 ] 
 
 if settings.DEBUG:

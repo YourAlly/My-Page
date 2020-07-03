@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
+from itertools import chain
 from MyPage import forms
 from .models import Post, Comment, Message
 from django.contrib import messages
+from django.http import JsonResponse
 
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
@@ -9,7 +11,8 @@ from django.contrib.auth.models import User
 
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
+
 
 # Create your views here.
 
@@ -248,3 +251,53 @@ def remove(request, user_id):
     request.user.profile.contacts.remove(user1)
     messages.success(request, f"{user1.username} removed from contacts")
     return redirect("my-user", user_id=user_id)
+
+
+@login_required
+def chat(request, target_id):
+    target = User.objects.get(pk=target_id)
+    target_messages = Message.objects.filter(sent_by=target, sent_to=request.user)
+    user_messages = Message.objects.filter(sent_by=request.user, sent_to=target)
+    all_messages = target_messages|user_messages
+    all_messages = all_messages.order_by('-time_sent')
+
+    context ={
+        'page_title': "Chat",
+        'sent_messages': all_messages,
+        'target': target
+    }
+
+    return render(request, 'MyPage/chat.html', context)
+
+@login_required
+def chat_send(request, target_id):
+    if request.method == 'POST':
+        target = User.objects.get(pk=target_id)
+        message = request.POST.get('message')
+        new_message = Message(sent_by=request.user, sent_to=target, message=message, title='chatmessage')
+
+        new_message.save()
+
+        return JsonResponse({'success': True, 'error': None})
+
+def chat_get(request, target_id):
+    target = User.objects.get(pk=target_id)
+    target_messages = Message.objects.filter(
+        sent_by=target, sent_to=request.user)
+    user_messages = Message.objects.filter(
+        sent_by=request.user, sent_to=target)
+    all_messages = target_messages|user_messages
+    all_messages = all_messages.order_by('-time_sent')
+
+    messages = []
+    for data in all_messages:
+        message = {'sent_by': data.sent_by.username,
+                    'sent_by_id': data.sent_by.id,
+                    'sent_to': data.sent_to.username,
+                    'sent_to_id': data.sent_to.id,
+                    'message': data.message,
+                    'time_sent': data.time_sent
+                    }
+        messages.append(message)
+
+    return JsonResponse({'sent_messages': messages})

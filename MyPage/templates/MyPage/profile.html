@@ -16,10 +16,12 @@
             <a href="{% url 'my-update-email' %}" class="text-secondary">Update Email</a>
 
         {% elif target in user.profile.contacts.all %}
+            <a href="{% url 'my-chat' target.id %}">my chat (experimental)</a>
             <a href="{% url 'my-remove' target.id %}" class="text-secondary">Remove from contacts</a></br>
             <a href="{% url 'my-messenger' target.id %}" class="text-secondary">Send a message</a>
 
         {% else %}
+            <a href="{% url 'my-chat' target.id %}">my chat (experimental)</a>
             <a href="{% url 'my-add' target.id %}" class="text-secondary">Add to contacts</a></br></br>
             <a href="{% url 'my-messenger' target.id %}" class="text-secondary">Send a message</a>
         {% endif %}
