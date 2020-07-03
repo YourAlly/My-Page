@@ -271,14 +271,13 @@ def chat(request, target_id):
 
 @login_required
 def chat_send(request, target_id):
-    if request.method == 'POST':
-        target = User.objects.get(pk=target_id)
-        message = request.POST.get('message')
-        new_message = Message(sent_by=request.user, sent_to=target, message=message, title='chatmessage')
+    target = User.objects.get(pk=target_id)
+    message = request.POST.get('message')
+    new_message = Message(sent_by=request.user, sent_to=target, message=message)
 
-        new_message.save()
+    new_message.save()
 
-        return JsonResponse({'success': True, 'error': None})
+    return JsonResponse({'success': True, 'error': None})
 
 def chat_get(request, target_id):
     target = User.objects.get(pk=target_id)

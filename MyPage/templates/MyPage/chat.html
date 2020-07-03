@@ -3,6 +3,7 @@
 
 <h3>Chat with {{target.username}}</h3>
     <form id="chat_message">
+        {% csrf_token %}
         Message:
         <input type="text" name="message">
     </form>
@@ -22,7 +23,9 @@
         request.open("GET", "{% url 'my-chat-get' target.id %}" )
         request.responseType = 'json';
         request.onload = ()=>{
-            print_messages(request.response);
+            response = request.response;
+            console.log(response)
+            print_messages(response);
         }
         request.send();
     }
@@ -31,13 +34,7 @@
         request = new XMLHttpRequest()
         request.open("POST", "{% url 'my-chat-send' target.id %}")
         request.onload = ()=>{
-            const response = request.response;
-            if(!response['error']){
-                load_messages()
-            }
-            else{
-                alert("Something went wrong")
-            }
+           load_messages();
         }
         request.send(form)
     }
