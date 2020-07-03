@@ -1,16 +1,39 @@
 {% extends 'MyPage/base.html' %}
 {% block content %}
     <h3 class='border-bottom' style="width: 50%;">Sent Messages</h3>
-    {% if not user.written_messages.all %}
+    {% if not sent_messages %}
         <h3> No messsages written </h3>
     {% endif %}
-    {% for message in user.written_messages.all %}
-    <div class="container">
-        <h4 title="by {{ message.sent_by }}">{{ message.title }}</h4>
+    {% for message in sent_messages %}
+    <div class="container" title="{{message.time_sent}}">
+    <h4>To {{message.sent_to}}:</h4>
         <div class="container">
-            <p>{{ message.message }}</p>
+            <h4 title="by {{ message.sent_to }}">{{ message.title }}</h4>
+            <div class="container">
+                <p>{{ message.message }}</p>
+            </div>
         </div>
     </div>
     {% endfor %}
+    {% if sent_messages.has_other_pages %}
+        {% if sent_messages.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ sent_messages.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in sent_messages.paginator.page_range %}
+            {% if sent_messages.number == num %}
+                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > sent_messages.number|add:'-3' and num < sent_messages.number|add:'3' %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if sent_messages.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ sent_messages.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ sent_messages.paginator.num_pages }}">Last</a>
+        {% endif %}
+
+    {% endif %}
 
 {% endblock %}

@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-
 from MyPage import forms
 from .models import Post, Comment, Message
 from django.contrib import messages
@@ -8,11 +7,12 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView, DetailView
 
 # Create your views here.
 
-# Views all posts
 class LoginView(auth_views.LoginView):
     template_name = "MyPage/form.html"
 
@@ -21,32 +21,56 @@ class LoginView(auth_views.LoginView):
         context['page_title'] = 'Login'
         return context
 
+
 class PostsView(ListView):
     model = Post
     template_name = 'MyPage/index.html'
     context_object_name = 'posts'
     ordering = ['-time_posted']
+    paginate_by = 6
+    
 
+# User profile page
+def user(request, user_id):
+    target = User.objects.get(pk=user_id)
+    posts = Post.objects.filter(author=target).order_by('-time_posted')
+    page = request.GET.get('page', 1)
 
-# Views a certain post with comments
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'MyPage/post.html'
-    context_object_name = 'post'
+    paginator = Paginator(posts, 5)
+    try:
+        user_posts = paginator.page(page)
+    except PageNotAnInteger:
+        user_posts = paginator.page(1)
+    except EmptyPage:
+        user_posts = paginator.page(paginator.num_pages)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = forms.CommentForm
-        return context
-
-
-# Views a certain amount of posts
-def index(request):
     context = {
-        'page_title': "Home",
-        'posts': Post.objects.all().order_by('-time_posted')[:10]
+        'page_title': "My Profile",
+        'target': target,
+        'posts': user_posts
     }
-    return render(request, 'MyPage/index.html', context)
+    return render(request, 'MyPage/profile.html', context)
+
+
+def post(request, post_id):
+    target = Post.objects.get(pk=post_id)
+    comments = Comment.objects.filter(on_post=target).order_by('-time_commented')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(comments, 5)
+    try:
+        post_comments = paginator.page(page)
+    except PageNotAnInteger:
+        post_comments = paginator.page(1)
+    except EmptyPage:
+        post_comments = paginator.page(paginator.num_pages)
+
+    context = {
+        'page_title': "My Profile",
+        'post': target,
+        'comments': post_comments,
+        'form': forms.CommentForm()
+    }
+    return render(request, 'MyPage/post.html', context)
 
 
 # Registers a user
@@ -99,7 +123,7 @@ def send_message(request, target_id):
                             message=form.cleaned_data['content'] if not form.cleaned_data['content'] == '' else None)
             new_message.save()
             messages.success(request, "Message Sent")
-            return redirect('my-index')
+            return redirect('my-user', target_id)
     else:
         form = forms.MessageForm(initial={'title': ''})
     context = {
@@ -124,17 +148,6 @@ def process_comment(request, post_id):
 
     return redirect('my-post', post_id)
 
-# User profile page
-def user(request, user_id):
-
-    context = {
-        'page_title': "My Profile",
-        'target': User.objects.get(pk=user_id)
-    }
-    return render(request, 'MyPage/profile.html', context)
-
-
-
 @login_required
 def contacts(request):
 
@@ -146,19 +159,43 @@ def contacts(request):
 
 @login_required
 def inbox(request):
+    messages = Message.objects.filter(
+        sent_to=request.user).order_by('-time_sent')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(messages, 5)
+    try:
+        received_messages = paginator.page(page)
+    except PageNotAnInteger:
+        received_messages = paginator.page(1)
+    except EmptyPage:
+        received_messages = paginator.page(paginator.num_pages)
+
     context = {
-        'page_title': "My Inbox"
+        'page_title': "My received_messages",
+        'received_messages': received_messages,
+        'form': forms.CommentForm()
     }
     return render(request, 'MyPage/inbox.html', context)
 
 
 @login_required
 def sent_messages(request):
-    context = {
-        'page_title': "My sent_messages"
-    }
-    return render(request, 'MyPage/sent_messages.html', context)
+    messages = Message.objects.filter(sent_by=request.user).order_by('-time_sent')
+    page = request.GET.get('page', 1)
+    paginator = Paginator(messages, 5)
+    try:
+        sent_messages = paginator.page(page)
+    except PageNotAnInteger:
+        sent_messages = paginator.page(1)
+    except EmptyPage:
+        sent_messages = paginator.page(paginator.num_pages)
 
+    context = {
+        'page_title': "My sent_messages",
+        'sent_messages': sent_messages,
+        'form': forms.CommentForm()
+    }   
+    return render(request, 'MyPage/sent_messages.html', context)
 
 
 @login_required

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('', my_views.index, name='my-index'),
+    path('', my_views.PostsView.as_view(), name='my-index'),
     path('register/', my_views.register, name='my-register'),
     path('login/', my_views.LoginView.as_view(), name='my-login'),
     path('logout/', LogoutView.as_view(template_name="MyPage/logout.html"), name='my-logout'),
@@ -14,9 +14,7 @@ urlpatterns = [
     path('contacts/message_user_id=<int:target_id>', my_views.send_message, name='my-messenger'),
     path('inbox/', my_views.inbox, name='my-inbox'),
     path('sent/', my_views.sent_messages, name='my-sent-messages'),
-
-    path('post/all/', my_views.PostsView.as_view(), name='my-posts-all'),
-    path('post/<int:pk>/', my_views.PostDetailView.as_view(), name='my-post'),
+    path('post/<int:post_id>/', my_views.post, name='my-post'),
     path('post/new/', my_views.post_form, name='my-new-post'),
     path('post/<int:post_id>/comment', my_views.process_comment, name='my-comment'),
 
