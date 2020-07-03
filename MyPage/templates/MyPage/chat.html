@@ -1,9 +1,7 @@
 {% extends 'MyPage/base.html' %}
 {% block content %}
 
-<h1>{{target.username}}</h1>
-<div class="container" id="chat-box">
-    
+<h3>Chat with {{target.username}}</h3>
     <form id="chat_message">
         Message:
         <input type="text" name="message">
@@ -44,9 +42,22 @@
         request.send(form)
     }
     function print_messages(data){
+        var ul, li;
+        ul = document.createElement('ul');
         for(message of data['sent_messages']){
-            document.querySelector('#chat-box').innerHTML += message['message'] +"</br>";
+            li = document.createElement('li');
+            li.innerHTML = `${message['sent_by']}: ${message['message']}`
+            if (message['sent_by'] == '{{ user.username }}'){
+                li.style.cssFloat = "left";
+            }
+            else{
+                li.style.cssFloat = "right";
+            }
+            ul.append(li);
+            ul.append(document.createElement('br'))
         }
+        document.querySelector('#chat-box').innerHTML = '';
+        document.querySelector('#chat-box').append(ul);
     }
 </script>
 
