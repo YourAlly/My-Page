@@ -5,19 +5,36 @@
     <form id="chat_message">
         {% csrf_token %}
         Message:
-        <input type="text" name="message">
+        <input type="text" name="message" id="message" onkeypress="return runScript(event)" >
     </form>
     <button id="send_button">Send</button>
-<div class="container" id="chat-box">
+<div class="container">
+    <ul id="chat-box" style="list-style: none;">
+
+
+    </ul>
 </div>
 
 <script>
+
     document.addEventListener('DOMContentLoaded', ()=>{
         document.querySelector('#send_button').onclick = ()=>{
             send_message();
         }
-        load_messages();
+        load_messages;
+        window.setInterval(load_messages, 1000,)
+
+        
     })
+
+    function runScript(e) {
+    //See notes about 'which' and 'key'
+    if (e.keyCode == 13) {
+        send_message();
+        return false;
+    }
+}
+
     function load_messages(){
         request = new XMLHttpRequest()
         request.open("GET", "{% url 'my-chat-get' target.id %}" )
@@ -35,26 +52,29 @@
         request.open("POST", "{% url 'my-chat-send' target.id %}")
         request.onload = ()=>{
            load_messages();
+           document.querySelector("#message").value = '';
         }
         request.send(form)
     }
+
     function print_messages(data){
         var ul, li;
-        ul = document.createElement('ul');
+        ul = document.querySelector('#chat-box');
+        ul.innerHTML = '';
         for(message of data['sent_messages']){
             li = document.createElement('li');
-            li.innerHTML = `${message['sent_by']}: ${message['message']}`
             if (message['sent_by'] == '{{ user.username }}'){
+                li.innerHTML = `<img src="${message['sent_by_image']}" style='width:4%;' alt="No Profile Picture Set" class="rounded-circle"> ${message['sent_by']}: ${message['message']}`
                 li.style.cssFloat = "left";
             }
             else{
+                li.innerHTML = `${message['sent_by']}: ${message['message']} <img src="${message['sent_by_image']}" style='width:4%;' alt="No Profile Picture Set" class="rounded-circle">`
                 li.style.cssFloat = "right";
             }
             ul.append(li);
             ul.append(document.createElement('br'))
         }
-        document.querySelector('#chat-box').innerHTML = '';
-        document.querySelector('#chat-box').append(ul);
+        
     }
 </script>
 

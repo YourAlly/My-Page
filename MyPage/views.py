@@ -286,14 +286,16 @@ def chat_get(request, target_id):
     user_messages = Message.objects.filter(
         sent_by=request.user, sent_to=target)
     all_messages = target_messages|user_messages
-    all_messages = all_messages.order_by('-time_sent')
+    all_messages = all_messages.order_by('-time_sent')[:20]
 
     messages = []
     for data in all_messages:
         message = {'sent_by': data.sent_by.username,
                     'sent_by_id': data.sent_by.id,
+                    'sent_by_image': data.sent_by.profile.image.url,
                     'sent_to': data.sent_to.username,
                     'sent_to_id': data.sent_to.id,
+                    'sent_to_image': data.sent_to.profile.image.url,
                     'message': data.message,
                     'time_sent': data.time_sent
                     }
