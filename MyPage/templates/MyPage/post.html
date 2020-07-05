@@ -27,12 +27,13 @@
 <div class="container">
     <h3 class='border-bottom bottom-line'>Comments</h3>
         {% for comment in comments %}
-            <h4>
-            <img src="{{ comment.commenter.profile.image.url }}" style="width:5%;" class="rounded-circle">
-            <a href="{% url 'my-user' comment.commenter.id %}" class="text-primary">
-                {{ comment.commenter }}
+            <a href="{% url 'my-user' comment.commenter.id %}" class="text-primary" title="{{ comment.time_commented }}">
+                <h4>
+                    <img src="{{ comment.commenter.profile.image.url }}" style="width:5%;" class="rounded-circle">
+                    {{ comment.commenter }}
+                </h4>
             </a>
-            </h4>
+            
             <div class="container">
                 <p>{{ comment.comment|linebreaks }}</p>
             </div>

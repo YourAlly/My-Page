@@ -11,16 +11,15 @@
     </br>
     {% if user.is_authenticated %}
         {% if target == user %}
-            
             <a href="{% url 'my-update-image' %}" class="text-secondary">Update Profile Picture</a></br>
             <a href="{% url 'my-update-email' %}" class="text-secondary">Update Email</a>
 
         {% elif target in user.profile.contacts.all %}
-            <a href="{% url 'my-remove' target.id %}" class="text-secondary">Remove from contacts</a></br>
+            <a href="{% url 'my-contact-action' target.id 'remove' %}" class="text-secondary">Remove from contacts</a></br>
             <a href="{% url 'my-chat' target.id %}" class="text-secondary">Chat with {{target.username}}</a>
 
         {% else %}
-            <a href="{% url 'my-add' target.id %}" class="text-secondary">Add to contacts</a></br>
+            <a href="{% url 'my-contact-action' target.id 'add' %}" class="text-secondary">Add to contacts</a></br>
             <a href="{% url 'my-chat' target.id %}" class="text-secondary">Chat with {{target.username}}</a>
         {% endif %}
         </br>

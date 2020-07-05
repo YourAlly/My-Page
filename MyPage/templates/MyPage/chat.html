@@ -4,8 +4,6 @@
 <h3 class="border-bottom bottom-line">Chat with {{target.username}}</h3>
 <div class="container">
     <ul id="chat-box" style="list-style: none; overflow: auto;">
-
-
     </ul>
 </div>
 
@@ -29,27 +27,32 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', ()=>{
-        
+        // Sets the button up and loads the messages
         document.querySelector('#send_button').onclick = ()=>{
             send_message();
         }
         load_messages;
-        window.setInterval(load_messages, 1500,);
+
+        // Load messages for every 1500 ms
+        window.setInterval(load_messages, 1500);
     })
 
+    // Runs when enter key is pressed
     function runScript(e) {
-    //See notes about 'which' and 'key'
-    if (e.keyCode == 13) {
-        send_message();
-        return false;
+        if (e.keyCode == 13) {
+            send_message();
+            return false;
+        }
     }
-}
+
+    // Gets the messages from the server and runs print_messages function
     function load_messages(){
         fetch("{% url 'my-chat-get' target.id %}")
         .then(response => response.json())
         .then(data => print_messages(data));
     }
     
+    // Sends the message to the server to be added to the database
     function send_message(){
         form = new FormData(document.querySelector('#chat_message'));
         request = new XMLHttpRequest()
@@ -61,6 +64,7 @@
         request.send(form)
     }
 
+    // Prints the messages
     function print_messages(data){
         var ul, li, i = 1;
         ul = document.querySelector('#chat-box');
@@ -95,7 +99,6 @@
                     if(message.sent_by != data.sent_messages[i].sent_by){
                         li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message.sent_by_image}" alt="No Profile Picture Set"`+
                         `  class="rounded-circle chat_message_image" title="${message.sent_by}: ${message.time_sent}">`;
-                        
                     }
                 
                     else{

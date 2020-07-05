@@ -2,7 +2,6 @@
 {% block content %}
     <h2 class="border-bottom bottom-line">Latest Posts</h2>
         {% for post in posts %}
-            {% if not post in user.profile.hidden_posts.all %}
                 <div class="container" style="margin-bottom: 2%;">
                     
                     <h2 title="{{ post.time_posted }}">
@@ -15,7 +14,6 @@
                     </h2>
                     
                 </div>
-            {% endif %}
         {% endfor %}
     {% if is_paginated %}
 

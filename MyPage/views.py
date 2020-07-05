@@ -198,18 +198,16 @@ def update_email(request):
 
 
 @login_required
-def add(request, user_id):
-    user1 = User.objects.get(pk=user_id)
-    request.user.profile.contacts.add(user1)
-    messages.success(request, f"{user1.username} added to contacts")
-    return redirect("my-user", user_id=user_id)
+def contact_action(request, user_id, action):
+    if action == 'add':
+        user1 = User.objects.get(pk=user_id)
+        request.user.profile.contacts.add(user1)
+        messages.success(request, f"{user1.username} added to contacts")
+    elif action == 'remove':
+        user1 = User.objects.get(pk=user_id)
+        request.user.profile.contacts.remove(user1)
+        messages.success(request, f"{user1.username} removed from contacts")
 
-
-@login_required
-def remove(request, user_id):
-    user1 = User.objects.get(pk=user_id)
-    request.user.profile.contacts.remove(user1)
-    messages.success(request, f"{user1.username} removed from contacts")
     return redirect("my-user", user_id=user_id)
 
 
@@ -247,6 +245,7 @@ def chat_send(request, target_id):
     return JsonResponse({'success': True, 'error': None})
 
 
+# This will run for every 1500 ms, help me and my server
 @login_required
 def chat_get(request, target_id):
     target = User.objects.get(pk=target_id)

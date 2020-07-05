@@ -47,7 +47,6 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.png', upload_to='images')
     contacts = models.ManyToManyField(User, blank=True, related_name='contacts')
-    hidden_posts = models.ManyToManyField(Post, blank=True)
 
     def __str__(self):
         return f'Profile: {self.user.username}'
