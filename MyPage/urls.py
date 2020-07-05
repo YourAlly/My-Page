@@ -15,18 +15,19 @@ urlpatterns = [
     path('post/<int:post_id>/', my_views.post, name='my-post'),
     path('post/new/', my_views.post_form, name='my-new-post'),
     path('post/<int:post_id>/comment', my_views.process_comment, name='my-comment'),
-    path('search/', my_views.user_search, name='my-search'),
+    path('users/', my_views.users, name='my-users'),
+
     path('user/<int:user_id>/', my_views.user, name='my-user'),
     path('user/<int:user_id>/add/', my_views.add, name='my-add'),
     path('user/<int:user_id>/remove/', my_views.remove, name='my-remove'),
     
-
     path('user/changeimage/', my_views.update_image, name='my-update-image'),
     path('user/changeemail/', my_views.update_email, name='my-update-email'),
 
-    path('chat/<int:target_id>', my_views.chat, name='my-chat'),
-    path('chat/<int:target_id>/send', my_views.chat_send, name='my-chat-send'),
-    path('chat/<int:target_id>/get', my_views.chat_get, name='my-chat-get')
+    path('user/<int:target_id>/chat/', my_views.chat, name='my-chat'),
+    path('user/<int:target_id>/chat/send/',
+         my_views.chat_send, name='my-chat-send'),
+    path('user/<int:target_id>/chat/get/', my_views.chat_get, name='my-chat-get')
 ] 
 
 if settings.DEBUG:

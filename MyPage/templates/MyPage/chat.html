@@ -1,13 +1,14 @@
 {% extends 'MyPage/base.html' %}
 {% block content %}
 
-<h3>Chat with {{target.username}}</h3>
+<h3 class="border-bottom bottom-line">Chat with {{target.username}}</h3>
 <div class="container">
     <ul id="chat-box" style="list-style: none; overflow: auto;">
 
 
     </ul>
 </div>
+
 <div class="container">
     <form id="chat_message">
         {% csrf_token %}
@@ -27,14 +28,13 @@
     <button id="send_button" class="btn btn-primary">Send</button>
 </div>
 <script>
-
     document.addEventListener('DOMContentLoaded', ()=>{
         
         document.querySelector('#send_button').onclick = ()=>{
             send_message();
         }
         load_messages;
-        window.setInterval(load_messages, 1000,);
+        window.setInterval(load_messages, 1500,);
     })
 
     function runScript(e) {
@@ -45,16 +45,11 @@
     }
 }
     function load_messages(){
-        request = new XMLHttpRequest()
-        request.open("GET", "{% url 'my-chat-get' target.id %}" )
-        request.responseType = 'json';
-        request.onload = ()=>{
-            response = request.response;
-            console.log(response)
-            print_messages(response);
-        }
-        request.send();
+        fetch("{% url 'my-chat-get' target.id %}")
+        .then(response => response.json())
+        .then(data => print_messages(data));
     }
+    
     function send_message(){
         form = new FormData(document.querySelector('#chat_message'));
         request = new XMLHttpRequest()
@@ -70,53 +65,54 @@
         var ul, li, i = 1;
         ul = document.querySelector('#chat-box');
         ul.innerHTML = '';
-        var len = data['sent_messages'].length
-        for(message of data['sent_messages'].reverse()){        
-            ul.append(document.createElement('br'));
+        var len = data.sent_messages.length
+        for(message of data.sent_messages.reverse()){
             li = document.createElement('li');
             li.title=`${message.sent_by}: ${message.time_sent}`;
 
-            if (message['sent_by'] == '{{ user.username }}'){
+            if (message.sent_by == '{{ user.username }}'){
                 if (len != i){
-                    if(message['sent_by'] != data['sent_messages'][i]['sent_by'] || len == i){
-                        li.innerHTML = `<img src="${message['sent_by_image']}" style="width: 35px;"`+
-                        ` alt="No Profile Picture Set" class="rounded-circle">`;
+                    if(message['sent_by'] != data.sent_messages[i].sent_by || len == i){
+                        li.innerHTML = `<img src="${message.sent_by_image}"`+
+                        ` alt="No Profile Picture Set" class="rounded-circle chat_message_image">`;
                         
                     }
                     else{
-                        li.innerHTML = '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        li.innerHTML = '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                     }
                 }
                 else{
-                    li.innerHTML = `<img src="${message['sent_by_image']}" style="width: 35px;"`+
-                        ` alt="No Profile Picture Set" class="rounded-circle">`;
+                    li.innerHTML = `<img src="${message.sent_by_image}"`+
+                        ` alt="No Profile Picture Set" class="rounded-circle chat_message_image">`;
                 }
-                li.innerHTML += `&nbsp&nbsp&nbsp${message['message']}`;
+                li.innerHTML += `&nbsp&nbsp${message.message}`;
                 li.style.cssFloat = "left";
                 li.style.textAlign = "left";
             }
             else{
                 li.innerHTML = `${message['message']}`;
                 if (len != i){
-                    if(message['sent_by'] != data['sent_messages'][i]['sent_by']){
-                        li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message['sent_by_image']}" style="width: 35px;"`+
-                        ` alt="No Profile Picture Set" class="rounded-circle" title="${message.sent_by}: ${message.time_sent}">`;
+                    if(message.sent_by != data.sent_messages[i].sent_by){
+                        li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message.sent_by_image}" alt="No Profile Picture Set"`+
+                        `  class="rounded-circle chat_message_image" title="${message.sent_by}: ${message.time_sent}">`;
                         
                     }
                 
                     else{
-                        li.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        li.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                     }
                 }
                 else{
-                    li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message['sent_by_image']}" style="width: 35px;"`+
-                        ` alt="No Profile Picture Set" class="rounded-circle" title="${message.sent_by}: ${message.time_sent}">`;
+                    li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message.sent_by_image}" alt="No Profile Picture Set"`+
+                        `  class="rounded-circle chat_message_image" title="${message.sent_by}: ${message.time_sent}">`;
                 }
                 li.style.cssFloat = "right";
                 li.style.textAlign = "right";
-               
             }
+            
+            ul.append(document.createElement('br'));
             ul.append(li);
+            
             i++;   
         }
     }

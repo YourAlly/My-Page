@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from itertools import chain
 from MyPage import forms
 from .models import Post, Comment, Message
 from django.contrib import messages
@@ -115,6 +114,7 @@ def post_form(request):
     }
     return render(request, 'MyPage/form.html', context)
 
+
 @login_required
 def send_message(request, target_id):
     if request.method == 'POST':
@@ -150,6 +150,7 @@ def process_comment(request, post_id):
         messages.error(request, "Something went wrong")
 
     return redirect('my-post', post_id)
+
 
 @login_required
 def contacts(request):
@@ -215,6 +216,12 @@ def remove(request, user_id):
 @login_required
 def chat(request, target_id):
     target = User.objects.get(pk=target_id)
+
+    if request.user.id == target.id:
+        messages.warning(
+            request, "You can't start a conversation with yourself")
+        return redirect('my-user', target_id)
+
     target_messages = Message.objects.filter(sent_by=target, sent_to=request.user)
     user_messages = Message.objects.filter(sent_by=request.user, sent_to=target)
     all_messages = target_messages|user_messages
@@ -227,6 +234,7 @@ def chat(request, target_id):
     }
 
     return render(request, 'MyPage/chat.html', context)
+
 
 @login_required
 def chat_send(request, target_id):
@@ -265,10 +273,12 @@ def chat_get(request, target_id):
 
     return JsonResponse({'sent_messages': messages})
 
-def user_search(request):
+
+def users(request):
     all_users = User.objects.exclude(pk=request.user.id)
     page = request.GET.get('page', 1)
     paginator = Paginator(all_users, 10)
+
     try:
         users = paginator.page(page)
     except PageNotAnInteger:
@@ -277,8 +287,8 @@ def user_search(request):
         users = paginator.page(paginator.num_pages)
 
     context = {
-        'page_title': "Search",
+        'page_title': "Users",
         'searched_users': users
     }
     
-    return render(request, "MyPage/search.html", context)
+    return render(request, "MyPage/users.html", context)

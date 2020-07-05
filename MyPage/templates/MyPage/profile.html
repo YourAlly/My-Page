@@ -20,7 +20,7 @@
             <a href="{% url 'my-chat' target.id %}" class="text-secondary">Chat with {{target.username}}</a>
 
         {% else %}
-            <a href="{% url 'my-add' target.id %}" class="text-secondary">Add to contacts</a></br></br>
+            <a href="{% url 'my-add' target.id %}" class="text-secondary">Add to contacts</a></br>
             <a href="{% url 'my-chat' target.id %}" class="text-secondary">Chat with {{target.username}}</a>
         {% endif %}
         </br>
@@ -28,7 +28,7 @@
     </br>
     
     <div class="container">
-        <h2 class="border-bottom" style="margin-bottom: 2%; width: 40%; margin-right: 60%;">{{ target.username }}'s Posts</h2>
+        <h2 class="border-bottom bottom-line">{{ target.username }}'s Posts</h2>
         {% for post in posts %}
             <div class="container" style="margin-bottom: 2%;">
                     

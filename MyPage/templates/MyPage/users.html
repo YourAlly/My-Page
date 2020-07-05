@@ -1,12 +1,12 @@
 {% extends 'MyPage/base.html' %}
 {% block content %}
 
-<h2 class="border-bottom" style="margin-bottom: 2%; width: 40%; margin-right: 60%;">Users</h2>
+<h2 class="border-bottom bottom-line">Users</h2>
         {% for searched_user in searched_users %}
             <div class="container" style="margin-bottom: 2%;">
                 
                 <h2>
-                    <a href="{% url 'my-user' user.id %}" class="text-secondary">
+                    <a href="{% url 'my-user' searched_user.id %}" class="text-secondary">
                     <img src="{{ searched_user.profile.image.url }}" style="width:5%;" class="rounded-circle" title="{{ a_user }}">
                     {{ searched_user.username }}
                     </a>

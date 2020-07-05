@@ -24,8 +24,8 @@
     </br>
 {% endif %}
 
-<div class="container" style="width: 40%; margin-right: 60%">
-    <h3 class='border-bottom'>Comments</h3>
+<div class="container">
+    <h3 class='border-bottom bottom-line'>Comments</h3>
         {% for comment in comments %}
             <h4>
             <img src="{{ comment.commenter.profile.image.url }}" style="width:5%;" class="rounded-circle">
