@@ -1,0 +1,39 @@
+{% extends 'MyPage/base.html' %}
+{% block content %}
+
+<h2 class="border-bottom" style="margin-bottom: 2%; width: 40%; margin-right: 60%;">Users</h2>
+        {% for searched_user in searched_users %}
+            <div class="container" style="margin-bottom: 2%;">
+                
+                <h2>
+                    <a href="{% url 'my-user' user.id %}" class="text-secondary">
+                    <img src="{{ searched_user.profile.image.url }}" style="width:5%;" class="rounded-circle" title="{{ a_user }}">
+                    {{ searched_user.username }}
+                    </a>
+                </h2>
+                
+            </div>
+        {% endfor %}
+
+{% if searched_users.has_other_pages %}
+        {% if searched_users.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ users.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in searched_users.paginator.page_range %}
+            {% if searched_users.number == num %}
+                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% elif num > searched_users.number|add:'-3' and num < searched_users.number|add:'3' %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if searched_users.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ searched_users.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ searched_users.paginator.num_pages }}">Last</a>
+        {% endif %}
+
+    {% endif %}
+
+{% endblock %}

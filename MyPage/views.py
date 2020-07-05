@@ -161,47 +161,6 @@ def contacts(request):
 
 
 @login_required
-def inbox(request):
-    messages = Message.objects.filter(
-        sent_to=request.user).order_by('-time_sent')
-    page = request.GET.get('page', 1)
-    paginator = Paginator(messages, 5)
-    try:
-        received_messages = paginator.page(page)
-    except PageNotAnInteger:
-        received_messages = paginator.page(1)
-    except EmptyPage:
-        received_messages = paginator.page(paginator.num_pages)
-
-    context = {
-        'page_title': "My received_messages",
-        'received_messages': received_messages,
-        'form': forms.CommentForm()
-    }
-    return render(request, 'MyPage/inbox.html', context)
-
-
-@login_required
-def sent_messages(request):
-    messages = Message.objects.filter(sent_by=request.user).order_by('-time_sent')
-    page = request.GET.get('page', 1)
-    paginator = Paginator(messages, 5)
-    try:
-        sent_messages = paginator.page(page)
-    except PageNotAnInteger:
-        sent_messages = paginator.page(1)
-    except EmptyPage:
-        sent_messages = paginator.page(paginator.num_pages)
-
-    context = {
-        'page_title': "My sent_messages",
-        'sent_messages': sent_messages,
-        'form': forms.CommentForm()
-    }   
-    return render(request, 'MyPage/sent_messages.html', context)
-
-
-@login_required
 def update_image(request):
     if request.method == 'POST':
         form = forms.ProfileUpdateForm(
@@ -279,6 +238,8 @@ def chat_send(request, target_id):
 
     return JsonResponse({'success': True, 'error': None})
 
+
+@login_required
 def chat_get(request, target_id):
     target = User.objects.get(pk=target_id)
     target_messages = Message.objects.filter(
@@ -297,8 +258,27 @@ def chat_get(request, target_id):
                     'sent_to_id': data.sent_to.id,
                     'sent_to_image': data.sent_to.profile.image.url,
                     'message': data.message,
-                    'time_sent': data.time_sent
+                    'time_sent': data.time_sent.strftime("%x %X")
                     }
+
         messages.append(message)
 
     return JsonResponse({'sent_messages': messages})
+
+def user_search(request):
+    all_users = User.objects.exclude(pk=request.user.id)
+    page = request.GET.get('page', 1)
+    paginator = Paginator(all_users, 10)
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
+    context = {
+        'page_title': "Search",
+        'searched_users': users
+    }
+    
+    return render(request, "MyPage/search.html", context)

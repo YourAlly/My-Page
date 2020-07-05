@@ -31,14 +31,13 @@ class Comment(models.Model):
 
 
 class Message(models.Model):
-    title = models.CharField(max_length=32, default='No Title')
     sent_by = models.ForeignKey(User, on_delete=models.CASCADE,
                            related_name='sent_messages')
     sent_to = models.ForeignKey(User, on_delete=models.CASCADE,
                            related_name='received_messages')
     time_sent = models.DateTimeField(default=timezone.now)
 
-    message = models.TextField()
+    message = models.CharField(max_length=100)
 
     def __str__(self):
         return f"{self.time_sent}: From {self.sent_by} to {self.sent_to}"

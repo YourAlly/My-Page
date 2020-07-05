@@ -2,29 +2,39 @@
 {% block content %}
 
 <h3>Chat with {{target.username}}</h3>
-    <form id="chat_message">
-        {% csrf_token %}
-        Message:
-        <input type="text" name="message" id="message" onkeypress="return runScript(event)" >
-    </form>
-    <button id="send_button">Send</button>
 <div class="container">
-    <ul id="chat-box" style="list-style: none;">
+    <ul id="chat-box" style="list-style: none; overflow: auto;">
 
 
     </ul>
 </div>
-
+<div class="container">
+    <form id="chat_message">
+        {% csrf_token %}
+        Message:
+        <div class="form-group">
+            <input type="text"
+            name="message"
+            class="form-control"
+            id="message"
+            style="width: 50%;"
+            onkeypress="return runScript(event)" 
+            autocomplete="off" 
+            maxlength="100"
+            />
+        </div>
+    </form>
+    <button id="send_button" class="btn btn-primary">Send</button>
+</div>
 <script>
 
     document.addEventListener('DOMContentLoaded', ()=>{
+        
         document.querySelector('#send_button').onclick = ()=>{
             send_message();
         }
         load_messages;
-        window.setInterval(load_messages, 1000,)
-
-        
+        window.setInterval(load_messages, 1000,);
     })
 
     function runScript(e) {
@@ -34,7 +44,6 @@
         return false;
     }
 }
-
     function load_messages(){
         request = new XMLHttpRequest()
         request.open("GET", "{% url 'my-chat-get' target.id %}" )
@@ -58,23 +67,58 @@
     }
 
     function print_messages(data){
-        var ul, li;
+        var ul, li, i = 1;
         ul = document.querySelector('#chat-box');
         ul.innerHTML = '';
-        for(message of data['sent_messages']){
+        var len = data['sent_messages'].length
+        for(message of data['sent_messages'].reverse()){        
+            ul.append(document.createElement('br'));
             li = document.createElement('li');
+            li.title=`${message.sent_by}: ${message.time_sent}`;
+
             if (message['sent_by'] == '{{ user.username }}'){
-                li.innerHTML = `<img src="${message['sent_by_image']}" style='width:4%;' alt="No Profile Picture Set" class="rounded-circle"> ${message['sent_by']}: ${message['message']}`
+                if (len != i){
+                    if(message['sent_by'] != data['sent_messages'][i]['sent_by'] || len == i){
+                        li.innerHTML = `<img src="${message['sent_by_image']}" style="width: 35px;"`+
+                        ` alt="No Profile Picture Set" class="rounded-circle">`;
+                        
+                    }
+                    else{
+                        li.innerHTML = '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                    }
+                }
+                else{
+                    li.innerHTML = `<img src="${message['sent_by_image']}" style="width: 35px;"`+
+                        ` alt="No Profile Picture Set" class="rounded-circle">`;
+                }
+                li.innerHTML += `&nbsp&nbsp&nbsp${message['message']}`;
                 li.style.cssFloat = "left";
+                li.style.textAlign = "left";
             }
             else{
-                li.innerHTML = `${message['sent_by']}: ${message['message']} <img src="${message['sent_by_image']}" style='width:4%;' alt="No Profile Picture Set" class="rounded-circle">`
+                li.innerHTML = `${message['message']}`;
+                if (len != i){
+                    if(message['sent_by'] != data['sent_messages'][i]['sent_by']){
+                        li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message['sent_by_image']}" style="width: 35px;"`+
+                        ` alt="No Profile Picture Set" class="rounded-circle" title="${message.sent_by}: ${message.time_sent}">`;
+                        
+                    }
+                
+                    else{
+                        li.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                    }
+                }
+                else{
+                    li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message['sent_by_image']}" style="width: 35px;"`+
+                        ` alt="No Profile Picture Set" class="rounded-circle" title="${message.sent_by}: ${message.time_sent}">`;
+                }
                 li.style.cssFloat = "right";
+                li.style.textAlign = "right";
+               
             }
             ul.append(li);
-            ul.append(document.createElement('br'))
+            i++;   
         }
-        
     }
 </script>
 

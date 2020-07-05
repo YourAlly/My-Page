@@ -12,12 +12,10 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(template_name="MyPage/logout.html"), name='my-logout'),
     path('contacts/', my_views.contacts, name='my-contacts'),
     path('contacts/message_user_id=<int:target_id>', my_views.send_message, name='my-messenger'),
-    path('inbox/', my_views.inbox, name='my-inbox'),
-    path('sent/', my_views.sent_messages, name='my-sent-messages'),
     path('post/<int:post_id>/', my_views.post, name='my-post'),
     path('post/new/', my_views.post_form, name='my-new-post'),
     path('post/<int:post_id>/comment', my_views.process_comment, name='my-comment'),
-
+    path('search/', my_views.user_search, name='my-search'),
     path('user/<int:user_id>/', my_views.user, name='my-user'),
     path('user/<int:user_id>/add/', my_views.add, name='my-add'),
     path('user/<int:user_id>/remove/', my_views.remove, name='my-remove'),
@@ -26,8 +24,6 @@ urlpatterns = [
     path('user/changeimage/', my_views.update_image, name='my-update-image'),
     path('user/changeemail/', my_views.update_email, name='my-update-email'),
 
-
-    # Experimental
     path('chat/<int:target_id>', my_views.chat, name='my-chat'),
     path('chat/<int:target_id>/send', my_views.chat_send, name='my-chat-send'),
     path('chat/<int:target_id>/get', my_views.chat_get, name='my-chat-get')
