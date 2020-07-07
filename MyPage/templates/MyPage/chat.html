@@ -2,7 +2,7 @@
 {% block content %}
 
 <h3 class="border-bottom bottom-line">Chat with {{target.username}}</h3>
-<div class="container">
+<div class="container table-responsive-md">
     <table class="table table-dark">
 
     </table>
@@ -25,6 +25,14 @@
         </div>
     </form>
     <button id="send_button" class="btn btn-primary">Send</button>
+    <div style="float: right;">
+        Update: 
+        <select id="update">
+            <option value="auto">Auto</option>
+            <option value="manual">Manual</option>
+        </select>
+        <span id="reload"></span>
+    </div>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', ()=>{
@@ -35,7 +43,7 @@
         load_messages;
 
         // Load messages for every 1500 ms
-        window.setInterval(load_messages, 1500);
+        window.setInterval(check_mode, 1500);
     })
 
     // Runs when enter key is pressed
@@ -43,6 +51,20 @@
         if (e.keyCode == 13) {
             send_message();
             return false;
+        }
+    }
+
+    function check_mode(){
+        document.querySelector('#reload').innerHTML = null;
+        if (document.querySelector("#update").value == 'auto'){
+            
+            load_messages();
+        }
+        else if (document.querySelector("#update").value == 'manual'){
+            button = document.createElement('button');
+            button.onclick = ()=>{load_messages()};
+            button.innerHTML = "Reload";
+            document.querySelector('#reload').append(button);
         }
     }
 
