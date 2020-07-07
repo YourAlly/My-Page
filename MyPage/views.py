@@ -258,7 +258,7 @@ def chat_get(request, target_id):
 
     messages = []
     for data in all_messages:
-        message = {'sent_by': data.sent_by.username,
+        message = { 'sent_by': data.sent_by.username,
                     'sent_by_id': data.sent_by.id,
                     'sent_by_image': data.sent_by.profile.image.url,
                     'sent_to': data.sent_to.username,

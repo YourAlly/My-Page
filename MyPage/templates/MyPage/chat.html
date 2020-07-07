@@ -3,8 +3,9 @@
 
 <h3 class="border-bottom bottom-line">Chat with {{target.username}}</h3>
 <div class="container">
-    <ul id="chat-box" style="list-style: none; overflow: auto;">
-    </ul>
+    <table>
+
+    </table>
 </div>
 
 <div class="container">
@@ -66,58 +67,60 @@
 
     // Prints the messages
     function print_messages(data){
-        var ul, li, i = 1;
-        ul = document.querySelector('#chat-box');
-        ul.innerHTML = '';
-        var len = data.sent_messages.length
-        for(message of data.sent_messages.reverse()){
-            li = document.createElement('li');
-            li.title=`${message.sent_by}: ${message.time_sent}`;
+        var tr = null, td = null, len = data.sent_messages.length, i = 1;
+        var table = document.querySelector('table');
+        table.innerHTML = '';
+        for (message of data.sent_messages.reverse()){
+            tr = document.createElement('tr');
+            tr.title = `${message.sent_by}: ${message.time_sent}`;
+            if (message.sent_by_id == {{ user.id }}){
+                td = document.createElement('td');
 
-            if (message.sent_by == '{{ user.username }}'){
                 if (len != i){
-                    if(message['sent_by'] != data.sent_messages[i].sent_by || len == i){
-                        li.innerHTML = `<img src="${message.sent_by_image}"`+
-                        ` alt="No Profile Picture Set" class="rounded-circle chat_message_image">`;
-                        
+                    if(message['sent_by'] != data.sent_messages[i].sent_by ){
+                        td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
+                        tr.className = "border-bottom";
                     }
                     else{
-                        li.innerHTML = '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        td.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                     }
                 }
                 else{
-                    li.innerHTML = `<img src="${message.sent_by_image}"`+
-                        ` alt="No Profile Picture Set" class="rounded-circle chat_message_image">`;
+                   td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
                 }
-                li.innerHTML += `&nbsp&nbsp${message.message}`;
-                li.style.cssFloat = "left";
-                li.style.textAlign = "left";
-            }
-            else{
-                li.innerHTML = `${message['message']}`;
-                if (len != i){
-                    if(message.sent_by != data.sent_messages[i].sent_by){
-                        li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message.sent_by_image}" alt="No Profile Picture Set"`+
-                        `  class="rounded-circle chat_message_image" title="${message.sent_by}: ${message.time_sent}">`;
-                    }
                 
+                td.innerHTML += `${message.message}`;
+
+                td.style.cssFloat = "left";
+                td.style.textAlign = "left";
+                tr.append(td);
+            }
+
+            if (message.sent_by_id == {{ target.id }}){
+                td = document.createElement('td');
+                td.innerHTML += `${message.message}`;
+
+                if (len != i){
+                    if(message['sent_by'] != data.sent_messages[i].sent_by){
+                        td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
+                        tr.className = "border-bottom";
+                    }
                     else{
-                        li.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        td.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                     }
                 }
                 else{
-                    li.innerHTML += `&nbsp&nbsp&nbsp<img src="${message.sent_by_image}" alt="No Profile Picture Set"`+
-                        `  class="rounded-circle chat_message_image" title="${message.sent_by}: ${message.time_sent}">`;
+                   td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
                 }
-                li.style.cssFloat = "right";
-                li.style.textAlign = "right";
+                
+                td.style.cssFloat = "right";
+                td.style.textAlign = "right";
+                tr.append(td);
             }
-            
-            ul.append(document.createElement('br'));
-            ul.append(li);
-            
-            i++;   
+            table.append(tr);
+            i++;
         }
+        
     }
 </script>
 
