@@ -3,7 +3,7 @@
 
 <h3 class="border-bottom bottom-line">Chat with {{target.username}}</h3>
 <div class="container">
-    <table>
+    <table class="table table-dark">
 
     </table>
 </div>
@@ -69,7 +69,7 @@
     function print_messages(data){
         var tr = null, td = null, len = data.sent_messages.length, i = 1;
         var table = document.querySelector('table');
-        table.innerHTML = '';
+        table.innerHTML = null;
         for (message of data.sent_messages.reverse()){
             tr = document.createElement('tr');
             tr.title = `${message.sent_by}: ${message.time_sent}`;
@@ -78,15 +78,14 @@
 
                 if (len != i){
                     if(message['sent_by'] != data.sent_messages[i].sent_by ){
-                        td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
-                        tr.className = "border-bottom";
+                        td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>&nbsp&nbsp`;
                     }
                     else{
-                        td.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        td.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                     }
                 }
                 else{
-                   td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
+                   td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>&nbsp&nbsp`;
                 }
                 
                 td.innerHTML += `${message.message}`;
@@ -102,15 +101,14 @@
 
                 if (len != i){
                     if(message['sent_by'] != data.sent_messages[i].sent_by){
-                        td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
-                        tr.className = "border-bottom";
+                        td.innerHTML += `&nbsp<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
                     }
                     else{
-                        td.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
+                        td.innerHTML += '&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp';
                     }
                 }
                 else{
-                   td.innerHTML += `<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
+                   td.innerHTML += `&nbsp<img src="${message.sent_by_image}" class="rounded-circle chat_message_image"\>`;
                 }
                 
                 td.style.cssFloat = "right";
