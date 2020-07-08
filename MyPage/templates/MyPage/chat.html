@@ -7,7 +7,6 @@
 
     </table>
 </div>
-
 <div class="container">
     <form id="chat_message">
         {% csrf_token %}
@@ -20,16 +19,17 @@
             style="width: 50%;"
             onkeypress="return runScript(event)" 
             autocomplete="off" 
-            maxlength="100"
+            maxlength="640"
             />
         </div>
     </form>
+
     <button id="send_button" class="btn btn-primary">Send</button>
     <div style="float: right;">
         Update: 
         <select id="update">
-            <option value="auto">Auto</option>
             <option value="manual">Manual</option>
+            <option value="auto">Auto</option>
         </select>
         <span id="reload"></span>
     </div>
@@ -40,7 +40,8 @@
         document.querySelector('#send_button').onclick = ()=>{
             send_message();
         }
-        load_messages;
+
+        load_messages();
 
         // Load messages for every 1500 ms
         window.setInterval(check_mode, 1500);

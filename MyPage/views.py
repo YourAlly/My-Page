@@ -46,8 +46,14 @@ def user(request, user_id):
     except EmptyPage:
         user_posts = paginator.page(paginator.num_pages)
 
+    if target == request.user:
+        title = "My Profile"
+    
+    else:
+        title = target.username[:20] + '...' if len(target.username) > 20 else target.username
+
     context = {
-        'page_title': "My Profile",
+        'page_title': f"{title}",
         'target': target,
         'posts': user_posts
     }
@@ -226,7 +232,8 @@ def chat(request, target_id):
     all_messages = all_messages.order_by('-time_sent')
 
     context ={
-        'page_title': "Chat",
+        'page_title': "Chat with " + 
+        target.username[:20] + '...' if len(target.username) > 20 else target.username,
         'sent_messages': all_messages,
         'target': target
     }

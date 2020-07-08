@@ -26,10 +26,10 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class CommentForm(forms.Form):
-    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'class': 'special'}), max_length=256)
+    comment = forms.CharField(widget=forms.Textarea(attrs={'rows': 3, 'class': 'special'}), max_length=640)
 
 
 class PostForm(forms.Form):
     title = forms.CharField(max_length=32, label="Title")
-    content = forms.CharField(widget=forms.Textarea, max_length=512)
+    content = forms.CharField(widget=forms.Textarea, max_length=1080)
 

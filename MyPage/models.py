@@ -37,7 +37,7 @@ class Message(models.Model):
                            related_name='received_messages')
     time_sent = models.DateTimeField(default=timezone.now)
 
-    message = models.CharField(max_length=100)
+    message = models.TextField()
 
     def __str__(self):
         return f"{self.time_sent}: From {self.sent_by} to {self.sent_to}"
