@@ -15,9 +15,10 @@ urlpatterns = [
     path('post/<int:post_id>/', my_views.post, name='my-post'),
     path('post/new/', my_views.post_form, name='my-new-post'),
     path('post/<int:post_id>/comment', my_views.process_comment, name='my-comment'),
-    path('users/', my_views.users, name='my-users'),
 
+    path('users/', my_views.users, name='my-users'),
     path('user/<int:user_id>/', my_views.user, name='my-user'),
+    path('users/search/', my_views.user_search, name='my-search'),
     path('user/<int:user_id>/?action=<str:action>/', my_views.contact_action, name='my-contact-action'),
     
     path('user/changeimage/', my_views.update_image, name='my-update-image'),

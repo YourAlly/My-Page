@@ -60,6 +60,18 @@ def user(request, user_id):
     return render(request, 'MyPage/profile.html', context)
 
 
+def user_search(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        user = User.objects.get(username=username)
+        if user:
+            return redirect('my-user', user.id)
+        else:
+            messages.warning(request, f"No user with username: {username} found!")
+            return redirect('my-users')
+    else:
+        return redirect('my-users')
+
 def post(request, post_id):
     target = Post.objects.get(pk=post_id)
     comments = Comment.objects.filter(on_post=target).order_by('-time_commented')

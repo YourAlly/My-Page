@@ -3,11 +3,24 @@
 
 <h3 class="border-bottom bottom-line">Chat with {{target.username}}</h3>
 <div class="container table-responsive-md">
-    <table class="table table-dark">
+    <div class="table-wrap" style="height: 500px; overflow: auto; width: 650px;" >
+    <table class="table table-dark" style="width: 625px;" >
 
     </table>
+    </div>
 </div>
+
 <div class="container">
+    </br>
+    <div>
+    Update: 
+    <select id="update">
+        <option value="manual">Manual</option>
+        <option value="auto">Auto</option>
+    </select>
+    <span id="reload"></span>
+    </div>
+     </br>
     <form id="chat_message">
         {% csrf_token %}
         Message:
@@ -25,14 +38,8 @@
     </form>
 
     <button id="send_button" class="btn btn-primary">Send</button>
-    <div style="float: right;">
-        Update: 
-        <select id="update">
-            <option value="manual">Manual</option>
-            <option value="auto">Auto</option>
-        </select>
-        <span id="reload"></span>
-    </div>
+    
+    
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', ()=>{

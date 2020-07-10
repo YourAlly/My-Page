@@ -1,6 +1,17 @@
 {% extends 'MyPage/base.html' %}
 {% block content %}
 
+<form action="{% url 'my-search' %}" method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="username-search">Search for a user:</label>
+        <input type="text" class="form-control" id="username-search" name="username" 
+        placeholder="Username" style="width: 50%;">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</br>
+
 <h2 class="border-bottom bottom-line">Users</h2>
         {% for searched_user in searched_users %}
             <div class="container" style="margin-bottom: 2%;">
